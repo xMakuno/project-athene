@@ -6,4 +6,4 @@ class SummaryRequest(BaseModel):
     prompt: str
 
 class SummaryResponse(BaseModel):
-    summary: str
+    pass
