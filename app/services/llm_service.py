@@ -42,14 +42,13 @@ class LLMService:
             except httpx.HTTPError as e:
                 return f"Error communicating with LLM: {str(e)}"
     
-    async def generate_summary(self, story: str) -> str:
+    async def generate_summary(self, prompt: str) -> dict:
         # TODO: should verify model exists
         """ model = await self.repo.get_by_id(model_id)
         if not model:
             raise ValueError("Model not found") """
         # TODO: should not be a literal
         url = f"http://10.150.99.3:31855/v1/chat/completions"
-        prompt = "Genera un resumen de 1 parrafo de maximo 100 palabras del siguiente relato policial: " + story
         payload = {
             "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
             "messages": [{"role": "user", "content": prompt}],
@@ -58,20 +57,11 @@ class LLMService:
             "top_p": 1,
             "frequency_penalty": 0,
             "presence_penalty": 0,
-            # "stop": ["\n\n"]
         }
         async with httpx.AsyncClient(timeout=self.timeout) as client:
             try:
                 response = await client.post(url, json=payload)
                 response.raise_for_status()
-                data = response.json()
-                
-                # Check format
-                if "message" in data:
-                     return data["message"]["content"]
-                # Fallback for openai format
-                if "choices" in data:
-                    return data["choices"][0]["message"]["content"]
-                return "Error: Unexpected response format from LLM provider."
+                return response.json()
             except httpx.HTTPError as e:
                 raise ValueError(f"Error communicating with LLM: {str(e)}")
