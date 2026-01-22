@@ -52,7 +52,7 @@ class LLMService:
         prompt = "Genera un resumen de 1 parrafo de maximo 100 palabras del siguiente relato policial: " + story
         payload = {
             "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
-            "prompt": prompt,
+            "messages": [{"role": "user", "content": prompt}],
             "max_tokens": 100,
             "temperature": 0.7,
             "top_p": 1,
