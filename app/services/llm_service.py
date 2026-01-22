@@ -42,7 +42,7 @@ class LLMService:
             except httpx.HTTPError as e:
                 return f"Error communicating with LLM: {str(e)}"
     
-    async def generate_summary(self, prompt: str) -> dict:
+    async def send_prompt(self, prompt: str) -> dict:
         # TODO: should verify model exists
         """ model = await self.repo.get_by_id(model_id)
         if not model:

@@ -9,7 +9,10 @@ async def get_llm_service()->LLMService:
 @router.post("/") # response_model=SummaryResponse)
 async def generate_summary(request: SummaryRequest, service: LLMService = Depends(get_llm_service)):
     try:
-        response_data = await service.generate_summary(request.prompt)
+        response_data = await service.send_prompt(request.prompt)
+        if "choices" in response_data and len(response_data["choices"]) > 0:
+            summary_text = response_data["choices"][0]["message"]["content"]
+            return SummaryResponse(summary=summary_text.strip())
         # Extract content from OpenAI-compatible response
         """ if "choices" in response_data and len(response_data["choices"]) > 0:
                 summary_text = response_data["choices"][0]["message"]["content"]
@@ -17,7 +20,14 @@ async def generate_summary(request: SummaryRequest, service: LLMService = Depend
             else:
                 raise ValueError("Unexpected response format from LLM") 
         """
-        return response_data
         
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+@router.post("/extract")
+async def extract_information(request: SummaryRequest, service: LLMService = Depends(get_llm_service)):
+    try:
+        response_data = await service.send_prompt(request.prompt)
+        return response_data
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
