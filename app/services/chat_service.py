@@ -1,3 +1,4 @@
+from datetime import datetime
 from uuid import UUID
 from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi import HTTPException
@@ -21,7 +22,9 @@ class ChatService:
         # TODO: Check if model exists
         new_chat = Chat(
             title=chat_data.title,
-            user_id=DEFAULT_USER_ID
+            user_id=DEFAULT_USER_ID,
+            created_at=datetime.now(),
+            updated_at=datetime.now() 
         )
         chat = await self.chat_repo.create_chat(new_chat)
         await self.session.commit()

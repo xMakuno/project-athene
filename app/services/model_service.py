@@ -3,12 +3,13 @@ from uuid import UUID
 from app.repositories.model_repository import ModelRepository
 from app.schemas.model import ModelCreate, ModelResponse
 from app.models.all import Model
+from app.services.llm_service import LLMService
 
 class ModelService:
     def __init__(self, session: AsyncSession):
         self.session = session
         self.repo = ModelRepository(session)
-
+        
     async def get_models(self) -> list[ModelResponse]:
         return await self.repo.get_all()
 

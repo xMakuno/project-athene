@@ -3,6 +3,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class Settings(BaseSettings):
     PROJECT_NAME: str = "Project Athene"
     API_V1_STR: str = "/api/v1"
+    SECRET_KEY: str = "your_secret_key_here" # In prod, read from env
     
     POSTGRES_USER: str
     POSTGRES_PASSWORD: str
