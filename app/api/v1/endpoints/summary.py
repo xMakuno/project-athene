@@ -10,16 +10,11 @@ async def get_llm_service()->LLMService:
 async def generate_summary(request: SummaryRequest, service: LLMService = Depends(get_llm_service)):
     try:
         response_data = await service.send_prompt(request.prompt)
-        if "choices" in response_data and len(response_data["choices"]) > 0:
-            summary_text = response_data["choices"][0]["message"]["content"]
-            return SummaryResponse(summary=summary_text.strip())
-        # Extract content from OpenAI-compatible response
-        """ if "choices" in response_data and len(response_data["choices"]) > 0:
-                summary_text = response_data["choices"][0]["message"]["content"]
-                return SummaryResponse(summary=summary_text)
-            else:
-                raise ValueError("Unexpected response format from LLM") 
-        """
+        print(response_data)
+        if not response_data:
+            raise HTTPException(status_code=500, detail="Empty response from LLM")
+
+        return response_data["choices"][0]["message"]
         
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
